@@ -1,5 +1,4 @@
--- TODO: rename this to actual name of the database + rename fields in tables to match
-use flights;
+use flightScanner;
 
 insert into airlines
 (id, name)
@@ -18,18 +17,18 @@ values
 insert into airports
 (id, name, latitude, longitude)
 values
-(1, 'New York Airport', -74.0000, +40.7167),
-(2, 'Lisbona Airport',  -9.1355, +38.7072),
-(3, 'Madrid Airport', -3.7033, +40.4167),
-(4, 'London Airport', -0.1262, +51.5002),
-(5, 'Paris Airport', +2.3510, +48.8567),
-(6, 'Amsterdam Airport', +4.8910, +52.3738),
-(7, 'Frankfurt Airport', +8.683333, +50.116667),
-(8, 'Instambul Airport', +29, +41),
-(9, 'Dubai Airport', +55.333333, +25.266667),
-(10, 'Tokyo Airport', +139.6823, +35.6785),
-(11, 'Sao Paulo Airport',  -46.616667, -23.5),
-(12, 'Sydney Airport', +151.2, -33.866667);
+(1, 'New York Airport', +40.7167, -74.0000),
+(2, 'Lisbona Airport', +38.7072,  -9.1355),
+(3, 'Madrid Airport', +40.4167, -3.7033),
+(4, 'London Airport', +51.5002, -0.1262),
+(5, 'Paris Airport', +48.8567, +2.3510),
+(6, 'Amsterdam Airport', +52.3738, +4.8910),
+(7, 'Frankfurt Airport', +50.116667, +8.683333),
+(8, 'Instambul Airport', +41, +29),
+(9, 'Dubai Airport', +25.266667, +55.333333),
+(10, 'Tokyo Airport', +35.6785, +139.6823),
+(11, 'Sao Paulo Airport', -23.5,  -46.616667),
+(12, 'Sydney Airport', -33.866667, +151.2);
 
 insert into flights
 (id, name, start_id, destination_id, airline_id, price)
