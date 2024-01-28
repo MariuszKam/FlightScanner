@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS flightScanner;
 USE flightScanner;
 
-CREATE TABLE IF NOT EXISTS Airport(
+CREATE TABLE IF NOT EXISTS airport(
 id BIGINT PRIMARY KEY NOT NULL ,
 name VARCHAR(255) ,
 latitude DOUBLE ,
@@ -9,13 +9,13 @@ longitude DOUBLE
 );
 select * from airport;
 
-CREATE TABLE IF NOT EXISTS Airline(
+CREATE TABLE IF NOT EXISTS airline(
 id BIGINT PRIMARY KEY NOT NULL ,
 name VARCHAR(255)
 );
 select * from airline;
 
-CREATE TABLE IF NOT EXISTS Flight(
+CREATE TABLE IF NOT EXISTS flight(
 id BIGINT PRIMARY KEY NOT NULL,
 name VARCHAR(255),
 start_id BIGINT   ,
