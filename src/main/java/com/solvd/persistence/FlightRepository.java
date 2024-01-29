@@ -9,6 +9,7 @@ import java.util.Optional;
 public class FlightRepository implements Repositorable {
 
     private static final Class<Repositorable> REPOSITORABLE_CLASS = Repositorable.class;
+    
     @Override
     public void create(Flight flight) {
         RepositoryUtility.executeVoidSQL(REPOSITORABLE_CLASS, repositorable -> repositorable.create(flight));
