@@ -1,17 +1,30 @@
 package com.solvd.service;
 
 
+import com.solvd.serviceinterface.FlightServiceInterface;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FlightService {
+public class FlightService implements FlightServiceInterface {
     private  FlightRepository flightRepository;
     private  AirportRepository airportRepository;
     private  AirlineRepository airlineRepository;
 
+    private SqlSessionFactory sqlSessionFactory;
 
+    public FlightService() {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("mybatis-config.xml")) {
+            this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing SqlSessionFactory", e);
+        }
+    }
     public FlightService(AirportRepository airportRepository, AirlineRepository airlineRepository, FlightRepository flightRepository) {
         this.airportRepository = airportRepository;
         this.airlineRepository = airlineRepository;
