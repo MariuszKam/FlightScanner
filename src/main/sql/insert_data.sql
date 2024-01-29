@@ -1,6 +1,6 @@
 use flightScanner;
 
-insert into airlines
+insert into airline
 (id, name)
 values
 (1, 'Ryanair'),
@@ -14,7 +14,7 @@ values
 (9, 'LOT Polish Airlines'),
 (10, 'Turkish Airlines');
 
-insert into airports
+insert into airport
 (id, name, latitude, longitude)
 values
 (1, 'New York Airport', +40.7167, -74.0000),
@@ -30,7 +30,7 @@ values
 (11, 'Sao Paulo Airport', -23.5,  -46.616667),
 (12, 'Sydney Airport', -33.866667, +151.2);
 
-insert into flights
+insert into flight
 (id, name, start_id, destination_id, airline_id, price)
 values
 (1, 'FL001', 1, 11, 1, 410),
