@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.solvd.persistence.">
+<mapper namespace="com.solvd.persistence.FlightRepository">
 
     <insert id="create">
-        INSERT INTO status (Status) VALUES (#{status})
+        INSERT INTO flight (id, name, start_id, destination_id, airline_id, price)
+        VALUES (#{id}, #{name}, #{startId}, #{destinationId}, #{airlineId}, #{price})
     </insert>
 
-    <select id="findById" resultMap="StatusResultMap">
-        SELECT * FROM rental.status WHERE id = #{id}
+    <select id="loadById" resultMap="FlightResultMap">
+        SELECT * FROM flight WHERE id = #{id}
     </select>
 
-    <select id="findByRentalDealId" resultMap="StatusResultMap">
-        SELECT * FROM status WHERE id IN (SELECT Status_id FROM rental.rental_deal WHERE id = #{rentalDealId})
+    <select id="loadAll" resultMap="FlightResultMap">
+        SELECT * FROM flight
     </select>
 
-    <resultMap id="StatusResultMap" type="com.solvd.model.deal.Status" autoMapping="false">
+    <resultMap id="FlightResultMap" type="com.solvd.model.Flight" autoMapping="false">
         <id property="id" column="id"/>
-        <result property="status" column="Status"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <association property="startId"
+                     resultMap="com.solvd.persistence.utility.Repositorable.AirportResultMap"/>
+        <association property="destinationId"
+                     resultMap="com.solvd.persistence.utility.Repositorable.AirportResultMap"/>
+        <association property="airlineId"
+                     resultMap="com.solvd.persistence.utility.Repositorable.AirlineResultMap"/>
     </resultMap>
 </mapper>
