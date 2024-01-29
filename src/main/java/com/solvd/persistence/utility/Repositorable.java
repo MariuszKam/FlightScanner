@@ -1,4 +1,4 @@
-package com.solvd.persistence;
+package com.solvd.persistence.utility;
 
 import java.util.List;
 import java.util.Optional;
