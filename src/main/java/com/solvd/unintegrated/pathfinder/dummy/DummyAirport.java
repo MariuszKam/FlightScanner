@@ -33,6 +33,7 @@ public class DummyAirport {
     }
 
     public void addDestination(DummyFlight flight) {
+        flight.setStart(this);
         this.destinations.add(flight);
     }
 

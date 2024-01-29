@@ -4,6 +4,8 @@ import com.solvd.unintegrated.pathfinder.PathfindingService;
 import com.solvd.unintegrated.pathfinder.dummy.DummyAirport;
 import com.solvd.unintegrated.pathfinder.dummy.DummyFlight;
 import com.solvd.unintegrated.pathfinder.util.EarthDistanceCalculator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -13,10 +15,12 @@ import java.util.function.Function;
 import static java.lang.Double.POSITIVE_INFINITY;
 
 public class PathfindingServiceImpl implements PathfindingService {
+    private static final Logger LOGGER = LogManager.getLogger(PathfindingServiceImpl.class.getName());
     @Override
     public Optional<List<DummyFlight>> findCheapestPath( DummyAirport start, DummyAirport destination) {
+        LOGGER.debug("starting search for cheapest path: %s -> %s".formatted(start.getName(), destination.getName()));
         return findPathAStar(start, destination,
-                PathfindingServiceImpl::lowestCostDefaultEstimator,
+                PathfindingServiceImpl::emptyEstimator,
                 PathfindingServiceImpl::calculateFlightCostByPrice,
                 PathfindingServiceImpl::cheapestFlightSelector
         );
@@ -24,80 +28,73 @@ public class PathfindingServiceImpl implements PathfindingService {
 
     @Override
     public Optional<List<DummyFlight>> findShortestPath( DummyAirport start, DummyAirport destination) {
+        LOGGER.debug("starting search for shortest path: %s -> %s".formatted(start.getName(), destination.getName()));
         return findPathAStar(start, destination,
-                PathfindingServiceImpl::lowestCostDistanceEstimator,
+                PathfindingServiceImpl::distanceEstimator,
                 PathfindingServiceImpl::calculateFlightCostByDistance,
                 PathfindingServiceImpl::cheapestFlightSelector
                 );
     }
 
-    private static Double calculateFlightCostByDistance(DummyFlight flight) {
-        return EarthDistanceCalculator.calculateDistanceBetweenCoordinates(
-                flight.getStart().getLatitude(), flight.getStart().getLongitude(),
-                flight.getDestination().getLatitude(), flight.getDestination().getLongitude());
-    }
-
-    private static Double calculateFlightCostByPrice(DummyFlight flight) {
-        return flight.getPrice();
-    }
-
-    private static DummyFlight cheapestFlightSelector(DummyFlight flightA, DummyFlight flightB) {
-        if (flightA.getPrice() < flightB.getPrice()) {
-            return flightA;
-        } else {
-            return flightB;
-        }
-    }
-
-    private static Double lowestCostDistanceEstimator(DummyAirport start, DummyAirport destination) {
-        return EarthDistanceCalculator.calculateDistanceBetweenCoordinates(
-                start.getLatitude(), start.getLongitude(),
-                destination.getLatitude(), destination.getLongitude());
-    }
-
-    private static Double lowestCostDefaultEstimator(DummyAirport start, DummyAirport destination) {
-        return 0.0;
-    }
-
-
-    // TODO create custom functional interface for lowestCostToDestinationEstimator to make it more clear what is start
-    //      and what is end
+    /**
+     * Calculates best path using A* algorithm
+     * @param start starting airport
+     * @param destination airport to which to find path
+     * @param lowestCostToDestinationEstimator function that will estimate that lowest possible cost
+     *                                         to destination from some airport, it takes two arguments:
+     *                                         first is airport from which to estimate cost, and second is
+     *                                         final destination to which cost is estimated.
+     *                                         for more details look at h(n) function at:
+     *                                         https://en.wikipedia.org/wiki/A*_search_algorithm
+     * @param costFunction function that calculates cost of each connection,
+     *                     used to find the lowest cost connection
+     * @param flightSelector function used to select flight in case that they have the same cost
+     * @return path is returned as list of flights, if found
+     */
     private static Optional<List<DummyFlight>> findPathAStar(DummyAirport start, DummyAirport destination,
                                                              BiFunction<DummyAirport, DummyAirport, Double> lowestCostToDestinationEstimator,
                                                              Function<DummyFlight, Double> costFunction,
                                                              BinaryOperator<DummyFlight> flightSelector){
-        // TODO rename
+        // contains currently known best patch to each airport
         Map<DummyAirport, DummyAirport> cameFrom = new HashMap<>();
-        Map<DummyAirport, Double> estimatedPathCosts = new HashMap<>();
+         // contains estimated lowest cost of path from start to destination
+         // leading through each airport
+        Map<DummyAirport, Double> estimatedFullPathCosts = new HashMap<>();
+        // contains cost of the cheapest know path from start to this node
         Map<DummyAirport, Double> cheapestPathFromStart = new HashMap<>();
-        PriorityQueue<DummyAirport> searchCandidates = new PriorityQueue<>(Comparator.comparingDouble(estimatedPathCosts::get));
+        PriorityQueue<DummyAirport> searchCandidates = new PriorityQueue<>(Comparator.comparingDouble(estimatedFullPathCosts::get));
+        searchCandidates.add(start);
 
         // initialize search
-        estimatedPathCosts.put(start, lowestCostToDestinationEstimator.apply(start, destination));
+        estimatedFullPathCosts.put(start, lowestCostToDestinationEstimator.apply(start, destination));
         cheapestPathFromStart.put(start, 0.0);
 
         while (! searchCandidates.isEmpty()) {
-            // select most promising node to update
-            //VertexWrapper bestCandidate = searchCandidates.poll();
-            DummyAirport bestCandidate = searchCandidates.poll();
+            // select most promising airport to check path (and remove it from search queue)
+            // most promising = one with the lowest estimated cost to destination
+            DummyAirport currentAirport = searchCandidates.poll();
+            LOGGER.debug("  considering airport: %s".formatted(currentAirport.getName()));
 
             // check if goal was reached
-            if( bestCandidate.equals(destination)) {
+            if( currentAirport.equals(destination)) {
                 return Optional.of(reconstructPath(start, destination, cameFrom, costFunction, flightSelector));
             }
 
-            for (DummyAirport nextVertex : getNextAirports(bestCandidate)) {
-                // check if this is better path to next vertex
-                double potentialCheapestPathToNextVertex = estimatedPathCosts.get(nextVertex)
-                        + findBestDirectFlightCost(bestCandidate, nextVertex, costFunction);
-                if( potentialCheapestPathToNextVertex < cheapestPathFromStart.getOrDefault(nextVertex, POSITIVE_INFINITY)) {
-                    // found better path to nextVertex
-                    cameFrom.put(bestCandidate, nextVertex);
-                    cheapestPathFromStart.put(nextVertex, potentialCheapestPathToNextVertex);
-                    estimatedPathCosts.put(nextVertex,
-                            potentialCheapestPathToNextVertex+ lowestCostToDestinationEstimator.apply(nextVertex, destination));
-                    if (!searchCandidates.contains(nextVertex)) {
-                        searchCandidates.add(nextVertex);
+            // update path from most promising node to nodes that it connects to
+            for (DummyAirport nextAirport : getNextAirports(currentAirport)) {
+                // check if this is better path to next airport
+                double potentialCheapestPathToNextAirport = cheapestPathFromStart.get(currentAirport)
+                        + findBestDirectFlightCost(currentAirport, nextAirport, costFunction);
+                if( potentialCheapestPathToNextAirport < cheapestPathFromStart.getOrDefault(nextAirport, POSITIVE_INFINITY)) {
+                    LOGGER.debug("    found better path to %s (cost from start to this airport: %f)".formatted(
+                            nextAirport.getName(), potentialCheapestPathToNextAirport));
+                    // found better path to nextAirport, save it
+                    cameFrom.put(nextAirport, currentAirport);
+                    cheapestPathFromStart.put(nextAirport, potentialCheapestPathToNextAirport);
+                    estimatedFullPathCosts.put(nextAirport,
+                            potentialCheapestPathToNextAirport + lowestCostToDestinationEstimator.apply(nextAirport, destination));
+                    if (!searchCandidates.contains(nextAirport)) {
+                        searchCandidates.add(nextAirport);
                     }
                 }
             }
@@ -174,6 +171,10 @@ public class PathfindingServiceImpl implements PathfindingService {
        if(bestFlights.isEmpty()) {
            throw  new RuntimeException("Unable to find best direct fly between flights: %s and %s".formatted(start.toString(), destination.toString()));
        }
+
+       LOGGER.debug("    searching for best direct flights (%s -> %s). found following flight with cost function = %f:"
+               .formatted(start.getName(), destination.getName(), lowestCost));
+       bestFlights.forEach( flight -> LOGGER.debug("       %s".formatted(flight.getName())));
        return bestFlights;
    }
 
@@ -183,4 +184,35 @@ public class PathfindingServiceImpl implements PathfindingService {
                 .distinct()
                 .toList();
     }
+
+
+    private static Double calculateFlightCostByDistance(DummyFlight flight) {
+        return EarthDistanceCalculator.calculateDistanceBetweenCoordinates(
+                flight.getStart().getLatitude(), flight.getStart().getLongitude(),
+                flight.getDestination().getLatitude(), flight.getDestination().getLongitude());
+    }
+
+    private static Double calculateFlightCostByPrice(DummyFlight flight) {
+        return flight.getPrice();
+    }
+
+    private static DummyFlight cheapestFlightSelector(DummyFlight flightA, DummyFlight flightB) {
+        if (flightA.getPrice() < flightB.getPrice()) {
+            return flightA;
+        } else {
+            return flightB;
+        }
+    }
+
+    private static Double distanceEstimator(DummyAirport start, DummyAirport destination) {
+        return EarthDistanceCalculator.calculateDistanceBetweenCoordinates(
+                start.getLatitude(), start.getLongitude(),
+                destination.getLatitude(), destination.getLongitude());
+    }
+
+
+    private static Double emptyEstimator(DummyAirport start, DummyAirport destination) {
+        return 0.0;
+    }
+
 }

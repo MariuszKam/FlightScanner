@@ -7,11 +7,14 @@ public class DummyFlight {
     private DummyAirport start;
     private DummyAirport destination;
 
-    public DummyFlight(String name, Double price, DummyAirport start, DummyAirport destination) {
+    public DummyFlight(String name, int price, DummyAirport destination) {
         this.name = name;
-        this.price = price;
-        this.start = start;
+        this.price = (double) price;
         this.destination = destination;
+    }
+
+    public void setStart(DummyAirport start) {
+        this.start = start;
     }
 
     public String getName() {
