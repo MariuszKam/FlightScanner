@@ -5,8 +5,8 @@ import java.util.Objects;
 public class Airport {
     private Long id;
     private String name;
-    private Double x;
-    private Double y;
+    private Double latitude;
+    private Double longitude;
 
     public Long getId() {
         return id;
@@ -24,26 +24,26 @@ public class Airport {
         this.name = name;
     }
 
-    public Double getX() {
-        return x;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setX(Double x) {
-        this.x = x;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public Double getY() {
-        return y;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setY(Double y) {
-        this.y = y;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     @Override
     public String toString() {
         return '"' + name +"\" airport, " +
-                "id=" + id + " x,y["+x+','+y+']';
+                "id=" + id + " x,y["+latitude+','+longitude+']';
     }
 
     @Override

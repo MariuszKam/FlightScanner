@@ -6,7 +6,7 @@ public class Flight {
     private Long id;
     private String name;
     private Airport start;
-    private Airport dest;
+    private Airport destination;
     private Airline airline;
     private Double price;
 
@@ -35,11 +35,11 @@ public class Flight {
     }
 
     public Airport getDest() {
-        return dest;
+        return destination;
     }
 
     public void setDest(Airport dest) {
-        this.dest = dest;
+        this.destination = dest;
     }
 
     public Airline getAirline() {
@@ -61,7 +61,7 @@ public class Flight {
     @Override
     public String toString() {
         return '"' + name +"\" flight, by " + airline +
-                " from " + start + " to " + dest +
+                " from " + start + " to " + destination +
                 " price=" + price +
                 "id=" + id;
     }
