@@ -17,12 +17,12 @@ public class FlightRepository implements Repositorable<Flight> {
     }
 
     @Override
-    public Optional loadById(Long id) {
+    public Optional<Flight> loadById(Long id) {
         return RepositoryUtility.executeTypeSQL(REPOSITORABLE_CLASS, repositorable -> repositorable.loadById(id));
     }
 
     @Override
-    public List loadAll() {
+    public List<Flight> loadAll() {
         return RepositoryUtility.executeListSQL(REPOSITORABLE_CLASS, Repositorable::loadAll);
     }
 }

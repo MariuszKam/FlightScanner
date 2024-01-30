@@ -17,12 +17,12 @@ public class AirportRepository implements Repositorable<Airport> {
     }
 
     @Override
-    public Optional loadById(Long id) {
+    public Optional<Airport> loadById(Long id) {
         return RepositoryUtility.executeTypeSQL(REPOSITORABLE_CLASS, repositorable -> repositorable.loadById(id));
     }
 
     @Override
-    public List loadAll() {
+    public List<Airport> loadAll() {
         return RepositoryUtility.executeListSQL(REPOSITORABLE_CLASS, Repositorable::loadAll);
     }
 }
