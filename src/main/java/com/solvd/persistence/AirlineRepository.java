@@ -1,5 +1,6 @@
 package com.solvd.persistence;
 
+import com.solvd.model.Airline;
 import com.solvd.persistence.utility.Repositorable;
 import com.solvd.persistence.utility.RepositoryUtility;
 
@@ -11,8 +12,8 @@ public class AirlineRepository implements Repositorable {
     private static final Class<Repositorable> REPOSITORABLE_CLASS = Repositorable.class;
 
     @Override
-    public void create(Airlane airlane) {
-        RepositoryUtility.executeVoidSQL(REPOSITORABLE_CLASS, repositorable -> repositorable.create(airlane));
+    public void create(Airline airline) {
+        RepositoryUtility.executeVoidSQL(REPOSITORABLE_CLASS, repositorable -> repositorable.create(airline));
 
     }
 

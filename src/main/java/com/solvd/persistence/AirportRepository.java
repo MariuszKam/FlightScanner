@@ -1,5 +1,6 @@
 package com.solvd.persistence;
 
+import com.solvd.model.Airport;
 import com.solvd.persistence.utility.Repositorable;
 import com.solvd.persistence.utility.RepositoryUtility;
 

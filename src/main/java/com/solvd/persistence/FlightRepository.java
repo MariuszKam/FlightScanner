@@ -1,5 +1,6 @@
 package com.solvd.persistence;
 
+import com.solvd.model.Flight;
 import com.solvd.persistence.utility.Repositorable;
 import com.solvd.persistence.utility.RepositoryUtility;
 
@@ -9,7 +10,7 @@ import java.util.Optional;
 public class FlightRepository implements Repositorable {
 
     private static final Class<Repositorable> REPOSITORABLE_CLASS = Repositorable.class;
-    
+
     @Override
     public void create(Flight flight) {
         RepositoryUtility.executeVoidSQL(REPOSITORABLE_CLASS, repositorable -> repositorable.create(flight));
