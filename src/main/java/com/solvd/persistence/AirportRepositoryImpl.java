@@ -2,6 +2,7 @@ package com.solvd.persistence;
 
 import com.solvd.model.Airport;
 import com.solvd.persistence.interfaces.AirportRepository;
+import com.solvd.persistence.utility.Repositorable;
 import com.solvd.persistence.utility.RepositoryUtility;
 
 import java.util.List;

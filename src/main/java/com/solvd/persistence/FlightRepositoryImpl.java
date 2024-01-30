@@ -8,7 +8,7 @@ import com.solvd.persistence.utility.RepositoryUtility;
 import java.util.List;
 import java.util.Optional;
 
-public class FlightRepositoryImpl implements Repositorable<Flight> {
+public class FlightRepositoryImpl implements FlightRepository {
 
     private static final Class<FlightRepository> REPOSITORABLE_CLASS = FlightRepository.class;
 
