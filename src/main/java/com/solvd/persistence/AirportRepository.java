@@ -7,7 +7,7 @@ import com.solvd.persistence.utility.RepositoryUtility;
 import java.util.List;
 import java.util.Optional;
 
-public class AirportRepository implements Repositorable {
+public class AirportRepository implements Repositorable<Airport> {
 
     private static final Class<Repositorable> REPOSITORABLE_CLASS = Repositorable.class;
 
