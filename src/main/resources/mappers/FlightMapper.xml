@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.persistence.FlightRepository">
+
+    <insert id="create">
+        INSERT INTO flight (id, name, start_id, destination_id, airline_id, price)
+        VALUES (#{id}, #{name}, #{startId}, #{destinationId}, #{airlineId}, #{price})
+    </insert>
+
+    <select id="loadById" resultMap="FlightResultMap">
+        SELECT * FROM flight WHERE id = #{id}
+    </select>
+
+    <select id="loadAll" resultMap="FlightResultMap">
+        SELECT * FROM flight
+    </select>
+
+    <resultMap id="FlightResultMap" type="com.solvd.model.Flight" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <association property="startId"
+                     resultMap="com.solvd.persistence.utility.Repositorable.AirportResultMap"/>
+        <association property="destinationId"
+                     resultMap="com.solvd.persistence.utility.Repositorable.AirportResultMap"/>
+        <association property="airlineId"
+                     resultMap="com.solvd.persistence.utility.Repositorable.AirlineResultMap"/>
+    </resultMap>
+</mapper>
