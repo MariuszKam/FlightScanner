@@ -77,7 +77,7 @@ public class Flight {
 
     @Override
     public String toString() {
-        return '"' + name +"\" flight, by " + airline +
+        return '"' + name + "\" flight, by " + airline +
                 " from " + start + " to " + destination +
                 " price=" + price +
                 "id=" + id;
@@ -90,11 +90,22 @@ public class Flight {
 
         Flight flight = (Flight) o;
 
-        return Objects.equals(id, flight.id);
+        if (!Objects.equals(id, flight.id)) return false;
+        if (!Objects.equals(name, flight.name)) return false;
+        if (!Objects.equals(start, flight.start)) return false;
+        if (!Objects.equals(destination, flight.destination)) return false;
+        if (!Objects.equals(airline, flight.airline)) return false;
+        return Objects.equals(price, flight.price);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (destination != null ? destination.hashCode() : 0);
+        result = 31 * result + (airline != null ? airline.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        return result;
     }
 }

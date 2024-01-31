@@ -10,10 +10,6 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class Main {
-    static {
-        System.setProperty("log4j.configurationFile", "src/main/resources/log4j2.xml");
-    }
-
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {

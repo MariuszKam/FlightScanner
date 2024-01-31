@@ -66,11 +66,18 @@ public class Airport {
 
         Airport airport = (Airport) o;
 
-        return Objects.equals(id, airport.id);
+        if (!Objects.equals(id, airport.id)) return false;
+        if (!Objects.equals(name, airport.name)) return false;
+        if (!Objects.equals(latitude, airport.latitude)) return false;
+        return Objects.equals(longitude, airport.longitude);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
+        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
+        return result;
     }
 }
