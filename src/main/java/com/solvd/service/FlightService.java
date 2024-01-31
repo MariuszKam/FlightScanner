@@ -2,7 +2,8 @@ package com.solvd.service;
 
 import com.solvd.model.Flight;
 import com.solvd.persistence.FlightRepositoryImpl;
-import com.solvd.serviceinterface.ServiceInterface;
+import com.solvd.persistence.interfaces.FlightRepository;
+import com.solvd.service.serviceinterface.ServiceInterface;
 import com.solvd.model.Airport;
 import com.solvd.model.Airline;
 
@@ -13,13 +14,13 @@ import java.util.Map;
 
 public class FlightService implements ServiceInterface<Flight, Long> {
 
-    private final FlightRepositoryImpl flightRepositoryImpl = new FlightRepositoryImpl();
-    private final AirportService airportService = new AirportService();
-    private final AirlineService airlineService = new AirlineService();
+    private FlightRepository flightRepository = new FlightRepositoryImpl();
+    private AirportService airportService = new AirportService();
+    private AirlineService airlineService = new AirlineService();
 
 
     public Map<String, List<String>> getDetailedFlightsInfoGroupedByCity() {
-        List<Flight> flights = flightRepositoryImpl.loadAll();
+        List<Flight> flights = flightRepository.loadAll();
         List<Airport> airports = airportService.getAll();
         List<Airline> airlines = airlineService.getAll();
 
@@ -53,12 +54,12 @@ public class FlightService implements ServiceInterface<Flight, Long> {
 
     @Override
     public void creates(Flight flight) {
-        flightRepositoryImpl.create(flight);
+        flightRepository.create(flight);
     }
 
     @Override
     public Optional<Flight> getById(Long id) {
-        Optional<Flight> flightOptional = flightRepositoryImpl.loadById(id);
+        Optional<Flight> flightOptional = flightRepository.loadById(id);
         flightOptional.ifPresent(flight -> {
             String startAirportName = flight.getStart() != null ?
                     airportService.getById(flight.getStart().getId()).map(Airport::getName).orElse("Unknown Airport") : "Unknown Airport";
@@ -72,7 +73,7 @@ public class FlightService implements ServiceInterface<Flight, Long> {
     }
 
     public List<Flight> getAll() {
-        List<Flight> flights = flightRepositoryImpl.loadAll();
+        List<Flight> flights = flightRepository.loadAll();
         flights.forEach(flight -> {
             String startAirportName = flight.getStart() != null ?
                     airportService.getById(flight.getStart().getId()).map(Airport::getName).orElse("Unknown Airport") : "Unknown Airport";

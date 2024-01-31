@@ -1,4 +1,4 @@
-package com.solvd.serviceinterface;
+package com.solvd.service.serviceinterface;
 
 import java.util.List;
 import java.util.Optional;

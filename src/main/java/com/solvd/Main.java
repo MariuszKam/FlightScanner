@@ -34,9 +34,10 @@ public class Main {
         System.out.println(airportService.getById(2L));
         flightService.getAll().forEach(System.out::println);
 
-        Airport startAirport = new Airport(100L,"Warsaw",324d,324d); // Initialize with proper values
-        Airport destinationAirport = new Airport(101L,"New York",353d,863d); // Initialize with proper values
-        Airline airline = new Airline(100L,"Air"); // Initialize with proper values
+        // Initialize with proper values
+        Airport startAirport = new Airport(100L,"Warsaw",324d,324d);
+        Airport destinationAirport = new Airport(101L,"New York",353d,863d);
+        Airline airline = new Airline(100L,"Air");
         Flight newFlight = new Flight(100L,"name",startAirport,destinationAirport,airline,503d);
         airportService.creates(startAirport);
         airportService.creates(destinationAirport);
