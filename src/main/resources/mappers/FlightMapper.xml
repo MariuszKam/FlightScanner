@@ -26,7 +26,7 @@
 
     <insert id="create">
         INSERT INTO flight (id, name, start_id, destination_id, airline_id, price)
-        VALUES (#{id}, #{name}, #{start}, #{destination}, #{airline}, #{price})
+        VALUES (#{id}, #{name}, #{start.id}, #{destination.id}, #{airline.id}, #{price})
     </insert>
 
     <select id="loadById" resultMap="FlightResultMap" parameterType="long">

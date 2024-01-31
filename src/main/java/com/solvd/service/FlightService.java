@@ -70,12 +70,8 @@ public class FlightService implements ServiceInterface<Flight, Long> {
         });
         return flightOptional;
     }
-    @Override
-    public List<Flight> getAll() {
 
-        return flightRepositoryImpl.loadAll();
-    }
-   /* public List<Flight> getAll() {
+    public List<Flight> getAll() {
         List<Flight> flights = flightRepositoryImpl.loadAll();
         flights.forEach(flight -> {
             String startAirportName = flight.getStart() != null ?
@@ -87,5 +83,5 @@ public class FlightService implements ServiceInterface<Flight, Long> {
             flight.getDestination().setName(destinationAirportName);
         });
         return flights;
-    }*/
+    }
 }
