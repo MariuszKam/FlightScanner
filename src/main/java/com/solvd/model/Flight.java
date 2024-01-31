@@ -51,11 +51,11 @@ public class Flight {
         this.start = start;
     }
 
-    public Airport getDest() {
+    public Airport getDestination() {
         return destination;
     }
 
-    public void setDest(Airport dest) {
+    public void setDestination(Airport dest) {
         this.destination = dest;
     }
 
