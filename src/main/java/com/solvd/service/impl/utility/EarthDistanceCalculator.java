@@ -1,4 +1,4 @@
-package com.solvd.unintegrated.pathfinder.util;
+package com.solvd.service.impl.utility;
 
 public class EarthDistanceCalculator {
     public static double calculateAngleBetweenCoordinates(double latitudeA, double longitudeA, double latitudeB, double longitudeB) {
