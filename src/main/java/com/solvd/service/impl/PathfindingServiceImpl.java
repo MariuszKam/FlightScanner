@@ -2,6 +2,7 @@ package com.solvd.service.impl;
 
 import com.solvd.model.Airport;
 import com.solvd.model.Flight;
+import com.solvd.service.FlightService;
 import com.solvd.service.PathfindingService;
 import com.solvd.service.impl.utility.EarthDistanceCalculator;
 import org.apache.logging.log4j.LogManager;
@@ -16,10 +17,22 @@ import static java.lang.Double.POSITIVE_INFINITY;
 
 public class PathfindingServiceImpl implements PathfindingService {
     private static final Logger LOGGER = LogManager.getLogger(PathfindingServiceImpl.class.getName());
+
+    private final FlightService flightService;
+
+    public PathfindingServiceImpl(FlightService flightService) {
+        this.flightService = flightService;
+    }
+
     @Override
-    public Optional<List<Flight>> findCheapestPath(Airport start, Airport destination, List<Flight> flights) {
+    public Optional<List<Flight>> findCheapestPath(Airport start, Airport destination) {
         LOGGER.debug("starting search for cheapest path: %s -> %s".formatted(start.getName(), destination.getName()));
-        return findPathAStar(start, destination, flights,
+
+        // load all flights from the database and generate connections information
+        List<Flight> allFlights = flightService.getAll();
+        AirportConnectionsInfo airportConnectionsInfo = new AirportConnectionsInfo(allFlights);
+
+        return findPathAStar(start, destination, airportConnectionsInfo,
                 PathfindingServiceImpl::emptyEstimator,
                 PathfindingServiceImpl::calculateFlightCostByPrice,
                 PathfindingServiceImpl::cheapestFlightSelector
@@ -27,40 +40,45 @@ public class PathfindingServiceImpl implements PathfindingService {
     }
 
     @Override
-    public Optional<List<Flight>> findShortestPath( Airport start, Airport destination, List<Flight> flights) {
+    public Optional<List<Flight>> findShortestPath(Airport start, Airport destination) {
         LOGGER.debug("starting search for shortest path: %s -> %s".formatted(start.getName(), destination.getName()));
-        return findPathAStar(start, destination, flights,
+
+        // load all flights from the database and generate connections information
+        List<Flight> allFlights = flightService.getAll();
+        AirportConnectionsInfo airportConnectionsInfo = new AirportConnectionsInfo(allFlights);
+
+        return findPathAStar(start, destination, airportConnectionsInfo,
                 PathfindingServiceImpl::distanceEstimator,
                 PathfindingServiceImpl::calculateFlightCostByDistance,
                 PathfindingServiceImpl::cheapestFlightSelector
-                );
+        );
     }
 
     /**
      * Calculates best path using A* algorithm
-     * @param start starting airport
-     * @param destination airport to which to find path
+     *
+     * @param start                            starting airport
+     * @param destination                      airport to which to find path
+     * @param airportConnectionsInfo           info about possible connections
      * @param lowestCostToDestinationEstimator function that will estimate that lowest possible cost
      *                                         to destination from some airport, it takes two arguments:
      *                                         first is airport from which to estimate cost, and second is
      *                                         final destination to which cost is estimated.
      *                                         for more details look at h(n) function at:
      *                                         https://en.wikipedia.org/wiki/A*_search_algorithm
-     * @param costFunction function that calculates cost of each connection,
-     *                     used to find the lowest cost connection
-     * @param flightSelector function used to select flight in case that they have the same cost
+     * @param costFunction                     function that calculates cost of each connection,
+     *                                         used to find the lowest cost connection
+     * @param flightSelector                   function used to select flight in case that they have the same cost
      * @return path is returned as list of flights, if found
      */
-    private static Optional<List<Flight>> findPathAStar(Airport start, Airport destination, List<Flight> flights,
-                                                             BiFunction<Airport, Airport, Double> lowestCostToDestinationEstimator,
-                                                             Function<Flight, Double> costFunction,
-                                                             BinaryOperator<Flight> flightSelector){
-        // contains possible flights from each airport
-        Map<Airport, List<Flight>> flightsFrom = generateFlightsFromMap(flights);
+    private static Optional<List<Flight>> findPathAStar(Airport start, Airport destination, AirportConnectionsInfo airportConnectionsInfo,
+                                                        BiFunction<Airport, Airport, Double> lowestCostToDestinationEstimator,
+                                                        Function<Flight, Double> costFunction,
+                                                        BinaryOperator<Flight> flightSelector) {
         // contains currently known best patch to each airport
         Map<Airport, Airport> cameFrom = new HashMap<>();
-         // contains estimated lowest cost of path from start to destination
-         // leading through each airport
+        // contains estimated lowest cost of path from start to destination
+        // leading through each airport
         Map<Airport, Double> estimatedFullPathCosts = new HashMap<>();
         // contains cost of the cheapest know path from start to this node
         Map<Airport, Double> cheapestPathFromStart = new HashMap<>();
@@ -71,23 +89,23 @@ public class PathfindingServiceImpl implements PathfindingService {
         estimatedFullPathCosts.put(start, lowestCostToDestinationEstimator.apply(start, destination));
         cheapestPathFromStart.put(start, 0.0);
 
-        while (! searchCandidates.isEmpty()) {
+        while (!searchCandidates.isEmpty()) {
             // select most promising airport to check path (and remove it from search queue)
             // most promising = one with the lowest estimated cost to destination
             Airport currentAirport = searchCandidates.poll();
             LOGGER.debug("  considering airport: %s".formatted(currentAirport.getName()));
 
             // check if goal was reached
-            if( currentAirport.equals(destination)) {
-                return Optional.of(reconstructPath(start, destination, flightsFrom, cameFrom, costFunction, flightSelector));
+            if (currentAirport.equals(destination)) {
+                return Optional.of(reconstructPath(start, destination, airportConnectionsInfo, cameFrom, costFunction, flightSelector));
             }
 
             // update path from most promising node to nodes that it connects to
-            for (Airport nextAirport : getNextAirports(currentAirport, flightsFrom)) {
+            for (Airport nextAirport : airportConnectionsInfo.getDirectDestinations(currentAirport)) {
                 // check if this is better path to next airport
                 double potentialCheapestPathToNextAirport = cheapestPathFromStart.get(currentAirport)
-                        + findBestDirectFlightCost(currentAirport, nextAirport, flightsFrom, costFunction);
-                if( potentialCheapestPathToNextAirport < cheapestPathFromStart.getOrDefault(nextAirport, POSITIVE_INFINITY)) {
+                        + findBestDirectFlightCost(currentAirport, nextAirport, airportConnectionsInfo, costFunction);
+                if (potentialCheapestPathToNextAirport < cheapestPathFromStart.getOrDefault(nextAirport, POSITIVE_INFINITY)) {
                     LOGGER.debug("    found better path to %s (cost from start to this airport: %f)".formatted(
                             nextAirport.getName(), potentialCheapestPathToNextAirport));
                     // found better path to nextAirport, save it
@@ -106,34 +124,20 @@ public class PathfindingServiceImpl implements PathfindingService {
         return Optional.empty();
     }
 
-    private static Map<Airport, List<Flight>> generateFlightsFromMap(List<Flight> flights) {
-        Map<Airport, List<Flight>> flightsFrom = new HashMap<>();
-        for (Flight flight : flights) {
-            Airport startAirport = flight.getStart();
-            if(startAirport == null) {
-                throw new RuntimeException("Start airport is null for flight: " + flight.getName());
-            }
-            if( !flightsFrom.containsKey(startAirport)) {
-                flightsFrom.put(flight.getStart(), new ArrayList<>());
-            }
-            flightsFrom.get(startAirport).add(flight);
-        }
-        return flightsFrom;
-    }
 
-   private static List<Flight> reconstructPath(Airport start, Airport destination, Map<Airport, List<Flight>> flightsFrom,
-                                               Map<Airport,Airport> cameFrom, Function<Flight, Double> costFunction,
-                                               BinaryOperator<Flight> flightSelector){
+    private static List<Flight> reconstructPath(Airport start, Airport destination, AirportConnectionsInfo airportConnectionsInfo,
+                                                Map<Airport, Airport> cameFrom, Function<Flight, Double> costFunction,
+                                                BinaryOperator<Flight> flightSelector) {
         List<Flight> path = new ArrayList<>();
         Airport currentPoint = destination;
 
-        while( !currentPoint.equals( start)) {
+        while (!currentPoint.equals(start)) {
             Airport prevPoint = cameFrom.get(currentPoint);
 
             // find best flight between two airports
-            List<Flight> bestFlights = findBestDirectFlights(prevPoint, currentPoint, flightsFrom, costFunction);
+            List<Flight> bestFlights = findBestDirectFlights(prevPoint, currentPoint, airportConnectionsInfo, costFunction);
             Flight bestFlight = bestFlights.getFirst();
-            for (int i = 1 ; i< bestFlights.size(); i++) {
+            for (int i = 1; i < bestFlights.size(); i++) {
                 // flight selector will select better flight if both have the same cost function
                 bestFlight = flightSelector.apply(bestFlight, bestFlights.get(i));
             }
@@ -146,68 +150,64 @@ public class PathfindingServiceImpl implements PathfindingService {
         // since path is constructed in reverse it needs to be reversed
         Collections.reverse(path);
         return path;
-   }
+    }
 
     /**
      * finds best (lowest cost) direct flight between two airports according to provided cost function and returns it's cost
      */
-   private static double findBestDirectFlightCost(Airport start, Airport destination, Map<Airport, List<Flight>> flightsFrom, Function<Flight, Double> costFunction ) {
-       return costFunction.apply(findBestDirectFlights(start, destination, flightsFrom, costFunction).getFirst());
-   }
+    private static double findBestDirectFlightCost(Airport start, Airport destination,
+                                                   AirportConnectionsInfo airportConnectionsInfo,
+                                                   Function<Flight, Double> costFunction) {
+        return costFunction.apply(findBestDirectFlights(start, destination, airportConnectionsInfo, costFunction).getFirst());
+    }
 
     /**
      * finds best (lowest cost) direct flight between two airports according to provided cost function and returns them
      * throws runtime exceptions if it fails to find them
      */
-   private static List<Flight> findBestDirectFlights(Airport start, Airport destination, Map<Airport, List<Flight>> flightsFrom, Function<Flight, Double> costFunction ) {
-       Double lowestCost = null;
-       List<Flight> bestFlights = new ArrayList<>();
+    private static List<Flight> findBestDirectFlights(Airport start, Airport destination,
+                                                      AirportConnectionsInfo airportConnectionsInfo,
+                                                      Function<Flight, Double> costFunction) {
+        Double lowestCost = null;
+        List<Flight> bestFlights = new ArrayList<>();
 
-       for(Flight flight : flightsFrom.get(start)) {
-           // select only flights that fly to destination
-           if (!flight.getDest().equals(destination)) {
-               continue;
-           }
+        for (Flight flight : airportConnectionsInfo.getDeparturesFrom(start)) {
+            // select only flights that fly to destination
+            if (!flight.getDestination().equals(destination)) {
+                continue;
+            }
 
-           if( lowestCost == null ) {
-               lowestCost = costFunction.apply(flight);
-               bestFlights.add(flight);
-           } else {
-               Double currentFlightCost = costFunction.apply(flight);
-               // TODO possible improvement to consider: make it so if two double differ by very small
-               //      value they are consider equal
-               if( currentFlightCost < lowestCost ) {
-                   lowestCost = currentFlightCost;
-                   bestFlights.clear();
-                   bestFlights.add(flight);
-               } else if (currentFlightCost.equals(lowestCost)) {
-                   bestFlights.add(flight);
-               }
-           }
-       }
+            if (lowestCost == null) {
+                lowestCost = costFunction.apply(flight);
+                bestFlights.add(flight);
+            } else {
+                Double currentFlightCost = costFunction.apply(flight);
+                // TODO possible improvement to consider: make it so if two double differ by very small
+                //      value they are consider equal
+                if (currentFlightCost < lowestCost) {
+                    lowestCost = currentFlightCost;
+                    bestFlights.clear();
+                    bestFlights.add(flight);
+                } else if (currentFlightCost.equals(lowestCost)) {
+                    bestFlights.add(flight);
+                }
+            }
+        }
 
-       if(bestFlights.isEmpty()) {
-           throw  new RuntimeException("Unable to find best direct fly between flights: %s and %s".formatted(start.toString(), destination.toString()));
-       }
+        if (bestFlights.isEmpty()) {
+            throw new RuntimeException("Unable to find best direct fly between flights: %s and %s".formatted(start.toString(), destination.toString()));
+        }
 
-       LOGGER.debug("    searching for best direct flights (%s -> %s). found following flight with cost function = %f:"
-               .formatted(start.getName(), destination.getName(), lowestCost));
-       bestFlights.forEach( flight -> LOGGER.debug("       %s".formatted(flight.getName())));
-       return bestFlights;
-   }
-
-    private static List<Airport> getNextAirports(Airport airport, Map<Airport, List<Flight>> flightsFrom) {
-        return flightsFrom.get(airport).stream()
-                .map(Flight::getDest)
-                .distinct()
-                .toList();
+        LOGGER.debug("    searching for best direct flights (%s -> %s). found following flight with cost function = %f:"
+                .formatted(start.getName(), destination.getName(), lowestCost));
+        bestFlights.forEach(flight -> LOGGER.debug("       %s".formatted(flight.getName())));
+        return bestFlights;
     }
-
 
     private static Double calculateFlightCostByDistance(Flight flight) {
         return EarthDistanceCalculator.calculateDistanceBetweenCoordinates(
                 flight.getStart().getLatitude(), flight.getStart().getLongitude(),
-                flight.getDest().getLatitude(), flight.getDest().getLongitude());
+                flight.getDestination().getLatitude(), flight.getDestination().getLongitude());
     }
 
     private static Double calculateFlightCostByPrice(Flight flight) {
@@ -231,6 +231,47 @@ public class PathfindingServiceImpl implements PathfindingService {
 
     private static Double emptyEstimator(Airport start, Airport destination) {
         return 0.0;
+    }
+
+    /**
+     * utility class that provides information about connections
+     * between airports
+     */
+    private static class AirportConnectionsInfo {
+        Map<Airport, List<Flight>> connectionsMap;
+
+        /**
+         * @param allFlights list of all flights
+         */
+        public AirportConnectionsInfo(List<Flight> allFlights) {
+            this.connectionsMap = generateConnectionMap(allFlights);
+        }
+
+        List<Flight> getDeparturesFrom(Airport airport) {
+            return Collections.unmodifiableList(this.connectionsMap.get(airport));
+        }
+
+        public List<Airport> getDirectDestinations(Airport fromAirport) {
+            return this.connectionsMap.get(fromAirport).stream()
+                    .map(Flight::getDestination)
+                    .distinct()
+                    .toList();
+        }
+
+        private final Map<Airport, List<Flight>> generateConnectionMap(List<Flight> flights) {
+            Map<Airport, List<Flight>> flightsFrom = new HashMap<>();
+            for (Flight flight : flights) {
+                Airport startAirport = flight.getStart();
+                if (startAirport == null) {
+                    throw new RuntimeException("Start airport is null for flight: " + flight.getName());
+                }
+                if (!flightsFrom.containsKey(startAirport)) {
+                    flightsFrom.put(flight.getStart(), new ArrayList<>());
+                }
+                flightsFrom.get(startAirport).add(flight);
+            }
+            return flightsFrom;
+        }
     }
 
 }
