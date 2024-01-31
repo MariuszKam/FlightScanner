@@ -1,12 +1,13 @@
 package com.solvd.persistence;
 
+import com.solvd.model.Flight;
 import com.solvd.persistence.utility.Repositorable;
 import com.solvd.persistence.utility.RepositoryUtility;
 
 import java.util.List;
 import java.util.Optional;
 
-public class FlightRepository implements Repositorable {
+public class FlightRepository implements Repositorable<Flight> {
 
     private static final Class<Repositorable> REPOSITORABLE_CLASS = Repositorable.class;
     

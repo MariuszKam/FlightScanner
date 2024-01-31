@@ -10,6 +10,23 @@ public class Flight {
     private Airline airline;
     private Double price;
 
+    public Flight(String name, Airport start, Airport destination, Airline airline, Double price) {
+        this.name = name;
+        this.start = start;
+        this.destination = destination;
+        this.airline = airline;
+        this.price = price;
+    }
+
+    public Flight(Long id, String name, Airport start, Airport destination, Airline airline, Double price) {
+        this.id = id;
+        this.name = name;
+        this.start = start;
+        this.destination = destination;
+        this.airline = airline;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
