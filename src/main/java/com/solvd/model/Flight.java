@@ -10,6 +10,19 @@ public class Flight {
     private Airline airline;
     private Double price;
 
+    public Flight() {
+    }
+
+
+    public Flight(Long id,String name, Airport start, Airport destination, Airline airline, Double price) {
+        this.id = id;
+        this.name = name;
+        this.start = start;
+        this.destination = destination;
+        this.airline = airline;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
@@ -34,12 +47,12 @@ public class Flight {
         this.start = start;
     }
 
-    public Airport getDest() {
+    public Airport getDestination() {
         return destination;
     }
 
-    public void setDest(Airport dest) {
-        this.destination = dest;
+    public void setDestination(Airport destination) {
+        this.destination = destination;
     }
 
     public Airline getAirline() {
@@ -60,10 +73,14 @@ public class Flight {
 
     @Override
     public String toString() {
-        return '"' + name +"\" flight, by " + airline +
-                " from " + start + " to " + destination +
-                " price=" + price +
-                "id=" + id;
+        return "Flight{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", start=" + start +
+                ", destination=" + destination +
+                ", airline=" + airline +
+                ", price=" + price +
+                '}';
     }
 
     @Override
