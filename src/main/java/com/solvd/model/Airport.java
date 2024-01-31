@@ -8,6 +8,16 @@ public class Airport {
     private Double latitude;
     private Double longitude;
 
+    public Airport() {
+    }
+
+    public Airport(Long id,String name, Double latitude, Double longitude) {
+        this.id=id;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public Long getId() {
         return id;
     }
