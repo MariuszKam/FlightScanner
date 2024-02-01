@@ -1,4 +1,4 @@
-package com.solvd.service;
+package com.solvd.service.serviceinterface;
 
 import com.solvd.model.Airport;
 import com.solvd.model.Flight;
