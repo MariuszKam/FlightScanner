@@ -10,11 +10,15 @@ public class Flight {
     private Airline airline;
     private Double price;
 
-    public Flight() {
+    public Flight(String name, Airport start, Airport destination, Airline airline, Double price) {
+        this.name = name;
+        this.start = start;
+        this.destination = destination;
+        this.airline = airline;
+        this.price = price;
     }
 
-
-    public Flight(Long id,String name, Airport start, Airport destination, Airline airline, Double price) {
+    public Flight(Long id, String name, Airport start, Airport destination, Airline airline, Double price) {
         this.id = id;
         this.name = name;
         this.start = start;
@@ -51,8 +55,8 @@ public class Flight {
         return destination;
     }
 
-    public void setDestination(Airport destination) {
-        this.destination = destination;
+    public void setDestination(Airport dest) {
+        this.destination = dest;
     }
 
     public Airline getAirline() {
@@ -73,14 +77,10 @@ public class Flight {
 
     @Override
     public String toString() {
-        return "Flight{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", start=" + start +
-                ", destination=" + destination +
-                ", airline=" + airline +
-                ", price=" + price +
-                '}';
+        return '"' + name + "\" flight, by " + airline +
+                " from " + start + " to " + destination +
+                " price=" + price +
+                "id=" + id;
     }
 
     @Override
@@ -90,11 +90,22 @@ public class Flight {
 
         Flight flight = (Flight) o;
 
-        return Objects.equals(id, flight.id);
+        if (!Objects.equals(id, flight.id)) return false;
+        if (!Objects.equals(name, flight.name)) return false;
+        if (!Objects.equals(start, flight.start)) return false;
+        if (!Objects.equals(destination, flight.destination)) return false;
+        if (!Objects.equals(airline, flight.airline)) return false;
+        return Objects.equals(price, flight.price);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (destination != null ? destination.hashCode() : 0);
+        result = 31 * result + (airline != null ? airline.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        return result;
     }
 }
