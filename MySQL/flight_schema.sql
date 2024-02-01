@@ -22,9 +22,9 @@ start_id BIGINT   ,
 destination_id BIGINT ,
 airline_id BIGINT,
 price DOUBLE ,
-FOREIGN KEY (start_id) REFERENCES Airport(id),
-FOREIGN KEY (destination_id) REFERENCES Airport(id),
-FOREIGN KEY (airline_id) REFERENCES Airline(id)
+FOREIGN KEY (start_id) REFERENCES airport(id),
+FOREIGN KEY (destination_id) REFERENCES airport(id),
+FOREIGN KEY (airline_id) REFERENCES airline(id)
 );
 select * from flight;
 show tables;
