@@ -10,7 +10,8 @@ public class Flight {
     private Airline airline;
     private Double price;
 
-    public Flight() {
+    public Flight(){
+
     }
 
 
