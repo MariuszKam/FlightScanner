@@ -1,10 +1,9 @@
-package com.solvd.service.impl;
+package com.solvd.service;
 
 import com.solvd.model.Airport;
 import com.solvd.model.Flight;
-import com.solvd.service.FlightService;
-import com.solvd.service.PathfindingService;
-import com.solvd.service.impl.utility.EarthDistanceCalculator;
+import com.solvd.service.serviceinterface.PathfindingService;
+import com.solvd.service.utility.EarthDistanceCalculator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
