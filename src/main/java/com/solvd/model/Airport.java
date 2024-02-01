@@ -8,11 +8,14 @@ public class Airport {
     private Double latitude;
     private Double longitude;
 
-    public Airport() {
+    public Airport(String name, Double latitude, Double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public Airport(Long id,String name, Double latitude, Double longitude) {
-        this.id=id;
+    public Airport(Long id, String name, Double latitude, Double longitude) {
+        this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -52,8 +55,8 @@ public class Airport {
 
     @Override
     public String toString() {
-        return '"' + name +"\" airport, " +
-                "id=" + id + " x,y["+latitude+','+longitude+']';
+        return '"' + name + "\" airport, " +
+                "id = " + id + ", [X,Y] = [" + latitude + ',' + longitude + ']';
     }
 
     @Override
@@ -63,11 +66,18 @@ public class Airport {
 
         Airport airport = (Airport) o;
 
-        return Objects.equals(id, airport.id);
+        if (!Objects.equals(id, airport.id)) return false;
+        if (!Objects.equals(name, airport.name)) return false;
+        if (!Objects.equals(latitude, airport.latitude)) return false;
+        return Objects.equals(longitude, airport.longitude);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
+        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
+        return result;
     }
 }
