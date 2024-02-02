@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.persistence.interfaces.FlightRepository">
+    
+    <sql id="flightSelect">
+        SELECT
+        f.id AS flight_id,
+        f.name AS flight_name,
+        f.price,
+        a_start.id AS start_airport_id,
+        a_start.name AS start_airport_name,
+        a_start.latitude AS start_latitude,
+        a_start.longitude AS start_longitude,
+        a_dest.id AS dest_airport_id,
+        a_dest.name AS dest_airport_name,
+        a_dest.latitude AS dest_latitude,
+        a_dest.longitude AS dest_longitude,
+        al.id AS airline_id,
+        al.name AS airline_name
+        FROM flight f
+        JOIN airport a_start ON f.start_id = a_start.id
+        JOIN airport a_dest ON f.destination_id = a_dest.id
+        JOIN airline al ON f.airline_id = al.id
+    </sql>
+
+    <insert id="create">
+        INSERT INTO flight (id, name, start_id, destination_id, airline_id, price)
+        VALUES (#{id}, #{name}, #{start.id}, #{destination.id}, #{airline.id}, #{price})
+    </insert>
+
+    <select id="loadById" resultMap="FlightResultMap" parameterType="long">
+        <include refid="flightSelect"/>
+        WHERE f.id = #{id}
+    </select>
+
+    <select id="loadAll" resultMap="FlightResultMap">
+        <include refid="flightSelect"/>
+    </select>
+
+    <resultMap id="FlightResultMap" type="com.solvd.model.Flight" autoMapping="false">
+        <id property="id" column="flight_id"/>
+        <result property="name" column="flight_name"/>
+        <result property="price" column="price"/>
+        <association property="start" javaType="com.solvd.model.Airport">
+            <id property="id" column="start_airport_id"/>
+            <result property="name" column="start_airport_name"/>
+            <result property="latitude" column="start_latitude"/>
+            <result property="longitude" column="start_longitude"/>
+        </association>
+        <association property="destination" javaType="com.solvd.model.Airport">
+            <id property="id" column="dest_airport_id"/>
+            <result property="name" column="dest_airport_name"/>
+            <result property="latitude" column="dest_latitude"/>
+            <result property="longitude" column="dest_longitude"/>
+        </association>
+        <association property="airline" javaType="com.solvd.model.Airline">
+            <id property="id" column="airline_id"/>
+            <result property="name" column="airline_name"/>
+        </association>
+    </resultMap>
+</mapper>
