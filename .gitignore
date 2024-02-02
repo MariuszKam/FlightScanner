@@ -5,3 +5,5 @@ target/
 !**/src/test/**/target/
 /src/main/resources/db.properties
 /app.log
+/src/main/resources/RouteDetails.json
+src/main/resources/RouteDetails.xml

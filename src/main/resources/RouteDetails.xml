@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <RouteDetails>
-    <Step>Take flight FL020 at Frankfurt Airport to get to Amsterdam Airport</Step>
-    <Step>Take flight FL022 at Amsterdam Airport to get to Paris Airport</Step>
-    <Step>Take flight FL014 at Paris Airport to get to London Airport</Step>
-    <Step>Take flight FL007 at London Airport to get to Madrid Airport</Step>
-    <Step>Take flight FL010 at Madrid Airport to get to Lisbona Airport</Step>
-    <Step>Take flight FL006 at Lisbona Airport to get to New York Airport</Step>
-    <Step>Take flight FL001 at New York Airport to get to Sao Paulo Airport</Step>
-    <Step>Take flight FL039 at Sao Paulo Airport to get to Sydney Airport</Step>
+    <Step>Take flight FL033 at Sydney Airport to get to Tokyo Airport</Step>
+    <Step>Take flight FL026 at Tokyo Airport to get to New York Airport</Step>
+    <Step>Take flight FL005 at New York Airport to get to Lisbona Airport</Step>
+    <Step>Take flight FL012 at Lisbona Airport to get to Madrid Airport</Step>
     <Step>You have reached your final destination</Step>
 </RouteDetails>
