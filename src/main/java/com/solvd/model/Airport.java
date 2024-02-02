@@ -1,6 +1,5 @@
 package com.solvd.model;
 
-import jakarta.xml.bind.annotation.*;
 import lombok.*;
 
 @Getter
