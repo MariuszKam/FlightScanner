@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <RouteDetails>
-    <Step>Take flight FL013 at Madrid Airport to get to Paris Airport</Step>
-    <Step>Take flight FL018 at Paris Airport to get to Frankfurt Airport</Step>
+    <Step>Take flight FL032 at Sydney Airport to get to Dubai Airport</Step>
+    <Step>Take flight FL029 at Dubai Airport to get to Madrid Airport</Step>
     <Step>You have reached your final destination</Step>
 </RouteDetails>

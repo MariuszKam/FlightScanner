@@ -7,14 +7,11 @@ import com.solvd.service.AirportService;
 import com.solvd.service.FlightService;
 import com.solvd.service.PathfindingServiceImpl;
 import com.solvd.service.serviceinterface.PathfindingService;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.*;
 
 public class FlightScanner {
@@ -128,12 +125,14 @@ public class FlightScanner {
 
 
                 List<String> steps = XMLConverter.convertRouteToListOfStrings(flightPathOpt);
+                RouteDetails routeDetails = new RouteDetails(steps);
 
 
                 String filePath = "src/main/resources/RouteDetails.xml";
 
 
                 XMLConverter.saveRouteDetailsAsXml(steps, filePath);
+                JSONConverter.saveToJSON(routeDetails);
 
             } else {
                 LOGGER.info("No route found.");
