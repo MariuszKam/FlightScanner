@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class Flight {
     private Long id;
     private String name;
@@ -15,11 +16,4 @@ public class Flight {
     private Airline airline;
     private Double price;
 
-    @Override
-    public String toString() {
-        return '"' + name + "\" flight, by " + airline +
-                " from " + start + " to " + destination +
-                " price=" + price +
-                "id=" + id;
-    }
 }
