@@ -1,6 +1,5 @@
 package com.solvd.model;
 
-import jakarta.xml.bind.annotation.*;
 import lombok.*;
 
 @Getter
@@ -18,11 +17,4 @@ public class Flight {
     private Airline airline;
     private Double price;
 
-    @Override
-    public String toString() {
-        return '"' + name + "\" flight, by " + airline +
-                " from " + start + " to " + destination +
-                " price=" + price +
-                "id=" + id;
-    }
 }

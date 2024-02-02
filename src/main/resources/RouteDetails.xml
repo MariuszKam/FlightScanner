@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <RouteDetails>
-    <Step>Take flight FL028 at Instambul Airport to get to Dubai Airport</Step>
-    <Step>Take flight FL031 at Dubai Airport to get to Sydney Airport</Step>
+    <Step>Take flight FL032 at Sydney Airport to get to Dubai Airport</Step>
+    <Step>Take flight FL029 at Dubai Airport to get to Madrid Airport</Step>
     <Step>You have reached your final destination</Step>
 </RouteDetails>
