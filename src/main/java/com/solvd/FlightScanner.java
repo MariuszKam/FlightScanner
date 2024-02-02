@@ -16,7 +16,7 @@ public class FlightScanner {
     private static final AirportService airportService = new AirportService();
     private static final PathfindingService pathfindingService = new PathfindingServiceImpl();
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
-    private static List<Airport> airports = airportService.getAll();
+    private static List<Airport> airports;
 
     private static Integer getInt(Scanner scanner) {
         String temp;

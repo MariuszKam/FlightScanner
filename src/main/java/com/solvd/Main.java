@@ -28,5 +28,6 @@ public class Main {
         AirportService airportService = new AirportService();
         Airport airport = airportService.getById(1L).get();
         System.out.println(airport);
+        FlightScanner.printAirports();
     }
 }
