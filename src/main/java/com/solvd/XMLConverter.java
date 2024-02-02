@@ -15,14 +15,16 @@ import java.util.Optional;
 
 public class XMLConverter {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
-    static void saveRouteDetailsAsXml(List<String> steps, String filePath) {
+    private static final String FILE_PATH = "src/main/resources/RouteDetails.xml";
+    static void saveRouteDetailsAsXml(RouteDetails routeDetails) {
         try {
+
             JAXBContext jaxbContext = JAXBContext.newInstance(RouteDetails.class);
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-            RouteDetails routeDetails = new RouteDetails(steps);
-            marshaller.marshal(routeDetails, new File(filePath));
+
+            marshaller.marshal(routeDetails, new File(FILE_PATH));
         } catch (Exception e) {
             LOGGER.error("Error saving route details to XML", e);
         }
