@@ -1,8 +1,10 @@
 package com.solvd.model;
 
+
 import jakarta.xml.bind.annotation.*;
 import lombok.*;
 
+import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor(force = true)
@@ -10,11 +12,8 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Airline")
-public class Airline {
-    @XmlAttribute
-    private Long id;
-    @XmlAttribute
-    private String name;
-
+@XmlRootElement(name = "RouteDetails")
+public class RouteDetails {
+    @XmlElement(name = "Step")
+    private List<String> steps;
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlightData>
+    <Airlines>
+        <Airline id="1" name="American Airlines"/>
+        <Airline id="2" name="Delta Airlines"/>
+    </Airlines>
+    <Airports>
+        <Airport id="1" name="John F. Kennedy International Airport" latitude="40.641766" longitude="-73.780968"/>
+        <Airport id="2" name="Los Angeles International Airport" latitude="33.941589" longitude="-118.40853"/>
+    </Airports>
+    <Flights>
+        <Flight id="1" name="Flight 101" price="299.99">
+            <start id="1" name="John F. Kennedy International Airport" latitude="40.641766" longitude="-73.780968"/>
+            <destination id="2" name="Los Angeles International Airport" latitude="33.941589" longitude="-118.40853"/>
+            <airline id="1" name="American Airlines"/>
+        </Flight>
+    </Flights>
+</FlightData>
+
