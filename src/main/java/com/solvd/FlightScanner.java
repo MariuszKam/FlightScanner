@@ -113,7 +113,7 @@ public class FlightScanner {
 
     public static List<Flight> flightSearchAndSave() {
         Triple<Airport, Airport, Integer> userFlight = getUserInput();
-        List<Flight> flightPath = Collections.emptyList(); // Default to empty list
+        List<Flight> flightPath = Collections.emptyList();
 
         if (userFlight != null) {
             Optional<List<Flight>> flightPathOpt = Optional.empty();
@@ -126,17 +126,21 @@ public class FlightScanner {
             if (flightPathOpt.isPresent()) {
                 flightPath = flightPathOpt.get();
 
-                List<String> steps = convertRouteToListOfStrings(flightPathOpt);
+
+                List<String> steps = XMLConverter.convertRouteToListOfStrings(flightPathOpt);
+
 
                 String filePath = "src/main/resources/RouteDetails.xml";
-                saveRouteDetailsAsXml(steps, filePath);
-                LOGGER.info("Route details have been saved to " + filePath);
+
+
+                XMLConverter.saveRouteDetailsAsXml(steps, filePath);
+
             } else {
                 LOGGER.info("No route found.");
             }
         }
 
-        return flightPath; // Always return a list, even if it's empty
+        return flightPath;
     }
 
 
@@ -154,37 +158,6 @@ public class FlightScanner {
         airports = airportService.getAll();
     }
 
-    private static void saveRouteDetailsAsXml(List<String> steps, String filePath) {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(RouteDetails.class);
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-            RouteDetails routeDetails = new RouteDetails(steps);
-            marshaller.marshal(routeDetails, new File(filePath));
-        } catch (Exception e) {
-            LOGGER.error("Error saving route details to XML", e);
-        }
-    }
-    private static List<String> convertRouteToListOfStrings(Optional<List<Flight>> optionalFlights) {
-        if (optionalFlights.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Flight> flights = optionalFlights.get();
-        List<String> steps = new ArrayList<>();
-
-        for (Flight flight : flights) {
-            String step = String.format("Take flight %s at %s to get to %s",
-                    flight.getName(),
-                    flight.getStart().getName(),
-                    flight.getDestination().getName());
-            steps.add(step);
-        }
-
-        steps.add("You have reached your final destination");
-
-        return steps;
-    }
 
 }
