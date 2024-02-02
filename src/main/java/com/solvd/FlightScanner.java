@@ -128,10 +128,7 @@ public class FlightScanner {
                 RouteDetails routeDetails = new RouteDetails(steps);
 
 
-                String filePath = "src/main/resources/RouteDetails.xml";
-
-
-                XMLConverter.saveRouteDetailsAsXml(steps, filePath);
+                XMLConverter.saveRouteDetailsAsXml(routeDetails);
                 JSONConverter.saveToJSON(routeDetails);
 
             } else {

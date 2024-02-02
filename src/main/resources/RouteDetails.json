@@ -1,3 +1,3 @@
 {
-  "steps" : [ "Take flight FL032 at Sydney Airport to get to Dubai Airport", "Take flight FL029 at Dubai Airport to get to Madrid Airport", "You have reached your final destination" ]
+  "steps" : [ "Take flight FL020 at Frankfurt Airport to get to Amsterdam Airport", "Take flight FL022 at Amsterdam Airport to get to Paris Airport", "Take flight FL014 at Paris Airport to get to London Airport", "Take flight FL007 at London Airport to get to Madrid Airport", "Take flight FL010 at Madrid Airport to get to Lisbona Airport", "Take flight FL006 at Lisbona Airport to get to New York Airport", "Take flight FL001 at New York Airport to get to Sao Paulo Airport", "Take flight FL039 at Sao Paulo Airport to get to Sydney Airport", "You have reached your final destination" ]
 }
