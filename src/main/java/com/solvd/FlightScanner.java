@@ -22,8 +22,7 @@ public class FlightScanner {
     private static final AirportService airportService = new AirportService();
     private static final PathfindingService pathfindingService = new PathfindingServiceImpl();
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
-    private static List<Airport> airports = airportService.getAll();
-    private static List<Flight> flights = flightService.getAll();
+    private static List<Airport> airports;
 
     private static Integer getInt(Scanner scanner) {
         String temp;
@@ -52,7 +51,6 @@ public class FlightScanner {
 
     public static void printGroupedFlights() {
         Map<String, List<String>> groupedFlightsInfo = flightService.getDetailedFlightsInfoGroupedByCity();
-
         for (var entry : groupedFlightsInfo.entrySet()) {
             LOGGER.info("City: " + entry.getKey() + '\n');
 
@@ -154,7 +152,6 @@ public class FlightScanner {
 
     public static void fetchData() {
         airports = airportService.getAll();
-        flights = flightService.getAll();
     }
 
     private static void saveRouteDetailsAsXml(List<String> steps, String filePath) {
