@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RouteDetails>
+    <Step>Take flight FL013 at Madrid Airport to get to Paris Airport</Step>
+    <Step>Take flight FL018 at Paris Airport to get to Frankfurt Airport</Step>
+    <Step>You have reached your final destination</Step>
+</RouteDetails>

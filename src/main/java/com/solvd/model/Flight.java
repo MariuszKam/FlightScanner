@@ -1,5 +1,6 @@
 package com.solvd.model;
 
+import jakarta.xml.bind.annotation.*;
 import lombok.*;
 
 @Getter
@@ -8,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
+
 public class Flight {
     private Long id;
     private String name;

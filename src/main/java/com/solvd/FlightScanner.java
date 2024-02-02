@@ -2,18 +2,20 @@ package com.solvd;
 
 import com.solvd.model.Airport;
 import com.solvd.model.Flight;
+import com.solvd.model.RouteDetails;
 import com.solvd.service.AirportService;
 import com.solvd.service.FlightService;
 import com.solvd.service.PathfindingServiceImpl;
 import com.solvd.service.serviceinterface.PathfindingService;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.io.File;
+import java.util.*;
 
 public class FlightScanner {
     private static final FlightService flightService = new FlightService();
@@ -109,10 +111,38 @@ public class FlightScanner {
         return new MutableTriple<>(airports.get(ap1 - 1), airports.get(ap2 - 1), type);
     }
 
-    public static List<Flight> flightSearch() {
+    public static List<Flight> flightSearchAndSave() {
         Triple<Airport, Airport, Integer> userFlight = getUserInput();
-        return flightSearch(userFlight);
+        List<Flight> flightPath = Collections.emptyList();
+
+        if (userFlight != null) {
+            Optional<List<Flight>> flightPathOpt = Optional.empty();
+            if (userFlight.getRight() == 1) {
+                flightPathOpt = pathfindingService.findCheapestPath(userFlight.getLeft(), userFlight.getMiddle());
+            } else {
+                flightPathOpt = pathfindingService.findShortestPath(userFlight.getLeft(), userFlight.getMiddle());
+            }
+
+            if (flightPathOpt.isPresent()) {
+                flightPath = flightPathOpt.get();
+
+
+                List<String> steps = XMLConverter.convertRouteToListOfStrings(flightPathOpt);
+
+
+                String filePath = "src/main/resources/RouteDetails.xml";
+
+
+                XMLConverter.saveRouteDetailsAsXml(steps, filePath);
+
+            } else {
+                LOGGER.info("No route found.");
+            }
+        }
+
+        return flightPath;
     }
+
 
     public static List<Flight> flightSearch(Triple<Airport, Airport, Integer> userFlight) {
         if (userFlight == null)
@@ -127,4 +157,7 @@ public class FlightScanner {
     public static void fetchData() {
         airports = airportService.getAll();
     }
+
+
+
 }
