@@ -9,17 +9,10 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Airport")
-
 public class Airport {
-    @XmlAttribute
     private Long id;
-    @XmlAttribute
     private String name;
-    @XmlAttribute
     private Double latitude;
-    @XmlAttribute
     private Double longitude;
 
     public String toString() {

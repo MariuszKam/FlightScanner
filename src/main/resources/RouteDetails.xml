@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RouteDetails>
+    <Step>Take flight FL018 at Paris Airport to get to Frankfurt Airport</Step>
+    <Step>Take flight FL017 at Frankfurt Airport to get to Instambul Airport</Step>
+    <Step>Take flight FL028 at Instambul Airport to get to Dubai Airport</Step>
+    <Step>Take flight FL031 at Dubai Airport to get to Sydney Airport</Step>
+    <Step>You have reached your final destination</Step>
+</RouteDetails>

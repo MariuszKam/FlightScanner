@@ -9,12 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Airline")
 public class Airline {
-    @XmlAttribute
     private Long id;
-    @XmlAttribute
     private String name;
 
 }

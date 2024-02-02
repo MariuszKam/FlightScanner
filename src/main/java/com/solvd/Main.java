@@ -15,7 +15,7 @@ public class Main {
         //show airport list
         FlightScanner.printAirports();
         //select airports
-        var userFlightPath = FlightScanner.flightSearch();
+        var userFlightPath = FlightScanner.flightSearchAndSave();
         //show result
         FlightScanner.printFlightSummary(userFlightPath);
         LOGGER.info("Thank you for choosing us");
