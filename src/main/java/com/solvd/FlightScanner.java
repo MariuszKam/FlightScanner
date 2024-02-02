@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class FlightScanner {
@@ -20,6 +21,7 @@ public class FlightScanner {
     private static final PathfindingService pathfindingService = new PathfindingServiceImpl();
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
     private static List<Airport> airports = airportService.getAll();
+    private static List<Flight> flights = flightService.getAll();
 
     private static Integer getInt(Scanner scanner) {
         String temp;
@@ -46,15 +48,27 @@ public class FlightScanner {
             LOGGER.info("[" + (i + 1) + "] " + airports.get(i) + '\n');
     }
 
-    public static void printFlightSummary(List<Flight> flights) {
-        if (flights.isEmpty())
+    public static void printGroupedFlights() {
+        Map<String, List<String>> groupedFlightsInfo = flightService.getDetailedFlightsInfoGroupedByCity();
+
+        for (var entry : groupedFlightsInfo.entrySet()) {
+            LOGGER.info("City: " + entry.getKey() + '\n');
+
+            for (String flightInfo : entry.getValue())
+                LOGGER.info(" - " + flightInfo);
+            LOGGER.info('\n');
+        }
+    }
+
+    public static void printFlightSummary(List<Flight> flightPath) {
+        if (flightPath.isEmpty())
             return;
 
         double totalCost = 0;
         String flightNames = new String();
         String airportNames = new String();
 
-        for (var f : flights) {
+        for (var f : flightPath) {
             totalCost += f.getPrice();
             flightNames += f.getName() + " -> ";
             airportNames += f.getStart() + " -> ";
@@ -63,7 +77,7 @@ public class FlightScanner {
         flightNames = flightNames.substring(0, flightNames.length() - 5);
         airportNames = airportNames.substring(0, airportNames.length() - 5);
 
-        LOGGER.info("Your flight from " + flights.getFirst().getName() + " to " + flights.getLast().getName() + '\n');
+        LOGGER.info("Your flight from " + flightPath.getFirst().getName() + " to " + flightPath.getLast().getName() + '\n');
         LOGGER.info(flightNames + '\n');
         LOGGER.info(airportNames + '\n');
         LOGGER.info("Total cost = " + totalCost + "$\n");
@@ -114,5 +128,6 @@ public class FlightScanner {
 
     public static void fetchData() {
         airports = airportService.getAll();
+        flights = flightService.getAll();
     }
 }
