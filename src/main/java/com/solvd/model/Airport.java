@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class Airport {
     private Long id;
     private String name;

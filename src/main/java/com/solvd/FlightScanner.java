@@ -1,10 +1,13 @@
 package com.solvd;
 
 import com.solvd.model.Airport;
+import com.solvd.model.Flight;
 import com.solvd.service.AirportService;
 import com.solvd.service.FlightService;
 import com.solvd.service.PathfindingServiceImpl;
 import com.solvd.service.serviceinterface.PathfindingService;
+import org.apache.commons.lang3.tuple.MutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +46,33 @@ public class FlightScanner {
             LOGGER.info("[" + (i + 1) + "] " + airports.get(i) + '\n');
     }
 
-    public static void flightSearch() {
+    public static void printFlightSummary(List<Flight> flights) {
+        if (flights.isEmpty())
+            return;
+
+        double totalCost = 0;
+        String flightNames = new String();
+        String airportNames = new String();
+
+        for (var f : flights) {
+            totalCost += f.getPrice();
+            flightNames += f.getName() + " -> ";
+            airportNames += f.getStart() + " -> ";
+        }
+
+        flightNames = flightNames.substring(0, flightNames.length() - 5);
+        airportNames = airportNames.substring(0, airportNames.length() - 5);
+
+        LOGGER.info("Your flight from " + flights.getFirst().getName() + " to " + flights.getLast().getName() + '\n');
+        LOGGER.info(flightNames + '\n');
+        LOGGER.info(airportNames + '\n');
+        LOGGER.info("Total cost = " + totalCost + "$\n");
+    }
+
+    public static Triple<Airport, Airport, Integer> getUserInput() {
+        if (airports.size() < 2)
+            return null;
+
         Scanner scanner = new Scanner(System.in);
         int ap1 = 0;
         int ap2 = 0;
@@ -65,10 +94,22 @@ public class FlightScanner {
 
         LOGGER.info("From " + airports.get(ap1 - 1) + " to " + airports.get(ap2 - 1) + "\tType = " + type);
 
-        if (type == 1)
-            LOGGER.info(pathfindingService.findCheapestPath(airports.get(ap1 - 1), airports.get(ap2 - 1)));
+        return new MutableTriple<>(airports.get(ap1 - 1), airports.get(ap2 - 1), type);
+    }
+
+    public static List<Flight> flightSearch() {
+        Triple<Airport, Airport, Integer> userFlight = getUserInput();
+        return flightSearch(userFlight);
+    }
+
+    public static List<Flight> flightSearch(Triple<Airport, Airport, Integer> userFlight) {
+        if (userFlight == null)
+            return null;
+
+        if (userFlight.getRight() == 1)
+            return pathfindingService.findCheapestPath(userFlight.getLeft(), userFlight.getMiddle()).get();
         else
-            LOGGER.info(pathfindingService.findShortestPath(airports.get(ap1 - 1), airports.get(ap2 - 1)));
+            return pathfindingService.findShortestPath(userFlight.getLeft(), userFlight.getMiddle()).get();
     }
 
     public static void fetchData() {
