@@ -27,24 +27,5 @@ public class XMLConverter {
             LOGGER.error("Error saving route details to XML", e);
         }
     }
-    static List<String> convertRouteToListOfStrings(Optional<List<Flight>> optionalFlights) {
-        if (optionalFlights.isEmpty()) {
-            return Collections.emptyList();
-        }
 
-        List<Flight> flights = optionalFlights.get();
-        List<String> steps = new ArrayList<>();
-
-        for (Flight flight : flights) {
-            String step = String.format("Take flight %s at %s to get to %s",
-                    flight.getName(),
-                    flight.getStart().getName(),
-                    flight.getDestination().getName());
-            steps.add(step);
-        }
-
-        steps.add("You have reached your final destination");
-
-        return steps;
-    }
 }

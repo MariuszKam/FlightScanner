@@ -57,28 +57,6 @@ public class FlightScanner {
         }
     }
 
-    public static void printFlightSummary(List<Flight> flightPath) {
-        if (flightPath.isEmpty())
-            return;
-
-        double totalCost = 0;
-        String flightNames = new String();
-        String airportNames = new String();
-
-        for (var f : flightPath) {
-            totalCost += f.getPrice();
-            flightNames += f.getName() + " -> ";
-            airportNames += f.getStart() + " -> ";
-        }
-
-        flightNames = flightNames.substring(0, flightNames.length() - 5);
-        airportNames = airportNames.substring(0, airportNames.length() - 5);
-
-        LOGGER.info("Your flight from " + flightPath.getFirst().getName() + " to " + flightPath.getLast().getName() + '\n');
-        LOGGER.info(flightNames + '\n');
-        LOGGER.info(airportNames + '\n');
-        LOGGER.info("Total cost = " + totalCost + "$\n");
-    }
 
     public static Triple<Airport, Airport, Integer> getUserInput() {
         if (airports.size() < 2)
@@ -124,7 +102,9 @@ public class FlightScanner {
                 flightPath = flightPathOpt.get();
 
 
-                List<String> steps = XMLConverter.convertRouteToListOfStrings(flightPathOpt);
+                List<String> steps = convertRouteToListOfStrings(flightPathOpt);
+                steps.forEach(LOGGER::info);
+
                 RouteDetails routeDetails = new RouteDetails(steps);
 
 
@@ -142,6 +122,26 @@ public class FlightScanner {
         return flightPath;
     }
 
+   private static List<String> convertRouteToListOfStrings(Optional<List<Flight>> optionalFlights) {
+        if (optionalFlights.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Flight> flights = optionalFlights.get();
+        List<String> steps = new ArrayList<>();
+
+        for (Flight flight : flights) {
+            String step = String.format("Take flight %s at %s to get to %s",
+                    flight.getName(),
+                    flight.getStart().getName(),
+                    flight.getDestination().getName());
+            steps.add(step);
+        }
+
+        steps.add("You have reached your final destination");
+
+        return steps;
+    }
 
     public static List<Flight> flightSearch(Triple<Airport, Airport, Integer> userFlight) {
         if (userFlight == null)
@@ -156,7 +156,6 @@ public class FlightScanner {
     public static void fetchData() {
         airports = airportService.getAll();
     }
-
 
 
 }
