@@ -19,8 +19,8 @@ public class PathfindingServiceImpl implements PathfindingService {
 
     private final FlightService flightService;
 
-    public PathfindingServiceImpl(FlightService flightService) {
-        this.flightService = flightService;
+    public PathfindingServiceImpl() {
+        this.flightService = new FlightService();
     }
 
     @Override

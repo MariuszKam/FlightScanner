@@ -22,4 +22,8 @@ public class Airport {
     @XmlAttribute
     private Double longitude;
 
+    public String toString() {
+        return '"' + name + "\" airport, " +
+                "id = " + id + ", [X,Y] = [" + latitude + ',' + longitude + ']';
+    }
 }

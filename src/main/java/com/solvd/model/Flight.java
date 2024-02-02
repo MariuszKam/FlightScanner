@@ -25,4 +25,11 @@ public class Flight {
     @XmlAttribute
     private Double price;
 
+    @Override
+    public String toString() {
+        return '"' + name + "\" flight, by " + airline +
+                " from " + start + " to " + destination +
+                " price=" + price +
+                "id=" + id;
+    }
 }
