@@ -81,7 +81,6 @@ public class FlightScanner {
         for (type = getInt(scanner); type <= 0 || type > 2; type = getInt(scanner))
             LOGGER.info("Wrong input!");
 
-        LOGGER.info("From " + airports.get(ap1 - 1) + " to " + airports.get(ap2 - 1) + "\tType = " + type);
 
         return new MutableTriple<>(airports.get(ap1 - 1), airports.get(ap2 - 1), type);
     }
