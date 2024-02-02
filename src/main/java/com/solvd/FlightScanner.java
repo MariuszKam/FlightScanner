@@ -46,7 +46,7 @@ public class FlightScanner {
 
     public static void printAirports() {
         for (int i = 0; i < airports.size(); ++i)
-            LOGGER.info("[" + (i + 1) + "] " + airports.get(i) + '\n');
+            LOGGER.info("[" + (i + 1) + "] " + airports.get(i).getName());
     }
 
     public static void printGroupedFlights() {
