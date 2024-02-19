@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RouteDetails>
+    <Step>Take flight FL033 at Sydney Airport to get to Tokyo Airport</Step>
+    <Step>Take flight FL026 at Tokyo Airport to get to New York Airport</Step>
+    <Step>Take flight FL005 at New York Airport to get to Lisbona Airport</Step>
+    <Step>Take flight FL012 at Lisbona Airport to get to Madrid Airport</Step>
+    <Step>You have reached your final destination</Step>
+</RouteDetails>
