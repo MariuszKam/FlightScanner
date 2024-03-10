@@ -19,5 +19,6 @@ public class C1_firstPageTest {
         String actualText = amazonPage.result.getText();
 
         Assert.assertTrue(actualText.contains(expectedText));
+        Driver.closeDriver();
     }
 }
